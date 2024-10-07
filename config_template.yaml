@@ -1,0 +1,121 @@
+# Global configuration
+global:
+  target_model: "croissantllm/base_190k"
+  datasets:
+    - name: "imperial-cpg/copyright-traps"
+      split: "seq_len_100_n_rep_1000"
+    - mimir_name: "arxiv"
+      split: "ngram_13_0.8"
+  batch_size: 32
+  device: "cuda:0"
+  fpr_thresholds:
+    - 0.1
+    - 0.01
+  n_bootstrap_samples: 10
+
+bag_of_words:
+  module: bag_of_words
+  test_size: 0.2
+  min_df: 0.05
+  n_estimators: 100
+  max_depth: 2
+  min_samples_leaf: 5
+  seed: 42
+
+loss:
+  module: loss
+
+zlib:
+  module: zlib
+
+lowercase:
+  module: lowercase
+  batch_size: 32
+
+ratio:
+  module: ratio
+  llama_model_path: ""
+  llama_tokenizer_path: ""
+  batch_size: 32
+  device: "cuda:0"
+
+neighborhood:
+  module: neighborhood
+  batch_size: 32
+  mlm_model: 'roberta-base'
+  n_neighbors: 50
+  top_k: 10
+  is_scale_embeds: true
+  device: 'cuda:0'
+
+samia:
+  module: samia
+  rouge_version: paper
+  n: 1
+  zlib: false
+  batch_size: 16
+  prefix_ratio: 0.5
+  max_length: 1024
+  n_candidates: 10
+  temperature: 1.0
+  top_k: 50
+  top_p: 1
+ 
+pac_10:
+  module: pac
+  k_min: 0.3
+  k_max: 0.05
+  alpha: 0.3
+  num_augmentations: 10
+ 
+surp_40_2:
+  module: surp
+  k: 40
+  max_entropy: 2.0
+  batch_size: 32
+
+probe:
+  module: probe
+  batch_size: 32
+  aux_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
+  split: "seq_len_100"
+  samples: 4000
+  seed: 42
+  ft_device: "cuda:0"
+  ft_batch_size: 50
+  ft_epochs: 10
+  ft_lr: 0.0001
+  model_save_dir: ""
+  center: true
+  scale: true
+  pr_lr: 0.001
+  pr_weight_decay: 0.1
+  pr_epochs: 1000
+  pr_device: "cuda:1"
+
+minkprob:
+  module: minkprob
+  k: 20
+  batch_size: 32
+
+minkplusplus:
+  module: minkplusplus
+  k: 20
+  batch_size: 32
+
+recall:
+  module: recall
+  extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
+  split: "seq_len_100"
+  batch_size: 32
+  n_shots: 10
+  match_perplexity: false
+  fixed_prefix: true
+
+conrecall:
+  module: conrecall
+  extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
+  split: "seq_len_100"
+  batch_size: 32
+  n_shots: 10
+  match_perplexity: false
