@@ -9,11 +9,12 @@ def make_recall_prefix(dataset, n_shots, perplexity_bucket=None):
     prefixes = []
     if perplexity_bucket is not None:
         dataset = dataset.filter(lambda x: x["perplexity_bucket"] == perplexity_bucket)
-    
+
     indices = random.sample(range(len(dataset)), n_shots)
     prefixes = [dataset[i]["text"] for i in indices]
 
     return " ".join(prefixes)
+
 
 class RecallAttack(AbstractAttack):
     def __init__(self, name, model, tokenizer, config):
@@ -21,8 +22,8 @@ class RecallAttack(AbstractAttack):
         self.extra_non_member_dataset = load_dataset(config['extra_non_member_dataset'], split=config['split'])
 
     def build_fixed_prefixes(self, target_dataset):
-        perplexity_buckets = set(x["perplexity_bucket"] for x in target_dataset)
         if self.config["match_perplexity"]:
+            perplexity_buckets = set(x["perplexity_bucket"] for x in target_dataset)    
             prefixes = {
                 ppl: make_recall_prefix(
                     dataset=self.extra_non_member_dataset,
@@ -31,26 +32,20 @@ class RecallAttack(AbstractAttack):
                 )
                 for ppl in perplexity_buckets
             }
+            return prefixes
         else:
             prefix = make_recall_prefix(
                 dataset=self.extra_non_member_dataset,
                 n_shots=self.config["n_shots"],
                 perplexity_bucket=None
             )
-            prefixes = {ppl: prefix for ppl in perplexity_buckets}
+            return [prefix]
 
-        return prefixes
-
-    def build_one_prefix(self, perplexity_bucket):
-        if self.config["match_perplexity"]:
-            ppl_bucket = perplexity_bucket
-        else:
-            ppl_bucket = None
-        
+    def build_one_prefix(self, perplexity_bucket=None):
         return make_recall_prefix(
             dataset=self.extra_non_member_dataset,
             n_shots=self.config["n_shots"],
-            perplexity_bucket=ppl_bucket
+            perplexity_bucket=perplexity_bucket
         )
 
     def run(self, dataset: Dataset) -> Dataset:
@@ -67,13 +62,20 @@ class RecallAttack(AbstractAttack):
         )
         dataset = dataset.map(lambda x: {self.name: x['recall_nlloss'] / x['nlloss']})
         return dataset
-    
-    def recall_nlloss(self, batch, prefixes = None):
-        it = zip(batch["perplexity_bucket"], batch["text"])
+
+    def recall_nlloss(self, batch, prefixes=None):
         if prefixes is not None:
-            texts = [prefixes[ppl_bucket] + " " + text for ppl_bucket, text in it]
+            if self.config["match_perplexity"]:
+                texts = [prefixes[ppl_bucket] + " " + text for ppl_bucket,
+                         text in zip(batch["perplexity_bucket"], batch["text"])]
+            else:
+                texts = [prefixes[0] + " " + text for text in batch["text"]]
         else:
-            texts = [self.build_one_prefix(ppl_bucket) + " " + text for ppl_bucket, text in it]
+            if self.config["match_perplexity"]:
+                texts = [self.build_one_prefix(ppl_bucket) + " " + text for ppl_bucket,
+                         text in zip(batch["perplexity_bucket"], batch["text"])]
+            else:
+                texts = [self.build_one_prefix() + " " + text for text in batch["text"]]
 
         tokenized = self.tokenizer.batch_encode_plus(texts, return_tensors='pt', padding="longest")
         token_ids = tokenized['input_ids'].to(self.device)

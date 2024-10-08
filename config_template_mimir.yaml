@@ -1,10 +1,10 @@
 # Global configuration
 global:
-  target_model: "croissantllm/base_190k"
+  target_model: "EleutherAI/pythia-6.9b-deduped"
   datasets:
-    - name: "imperial-cpg/copyright-traps"
-      split: "seq_len_100_n_rep_1000"
     - mimir_name: "arxiv"
+      split: "ngram_13_0.8"
+    - mimir_name: "pile_cc"
       split: "ngram_13_0.8"
   batch_size: 32
   device: "cuda:0"
@@ -74,25 +74,6 @@ surp_40_2:
   max_entropy: 2.0
   batch_size: 32
 
-probe:
-  module: probe
-  batch_size: 32
-  aux_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
-  split: "seq_len_100"
-  samples: 4000
-  seed: 42
-  ft_device: "cuda:0"
-  ft_batch_size: 50
-  ft_epochs: 10
-  ft_lr: 0.0001
-  model_save_dir: ""
-  center: true
-  scale: true
-  pr_lr: 0.001
-  pr_weight_decay: 0.1
-  pr_epochs: 1000
-  pr_device: "cuda:1"
-
 minkprob:
   module: minkprob
   k: 20
@@ -102,20 +83,3 @@ minkplusplus:
   module: minkplusplus
   k: 20
   batch_size: 32
-
-recall:
-  module: recall
-  extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
-  split: "seq_len_100"
-  batch_size: 16
-  n_shots: 10
-  match_perplexity: false
-  fixed_prefix: true
-
-conrecall:
-  module: conrecall
-  extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
-  split: "seq_len_100"
-  batch_size: 16
-  n_shots: 10
-  match_perplexity: false
