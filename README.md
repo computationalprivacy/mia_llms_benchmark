@@ -10,6 +10,10 @@ across **the (proper) benchmarks recommended in the paper**.
 
 ## (1) Installation
 
+In your python environment, run `pip install -r requirements.txt` to get the required dependencies. 
+
+To run this code, access to GPUs is recommended. 
+
 ## (2) Accessing datasets
 
 ## (3) Running MIAs against LLMs
