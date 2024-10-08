@@ -34,8 +34,8 @@ lowercase:
 
 ratio:
   module: ratio
-  llama_model_path: ""
-  llama_tokenizer_path: ""
+  reference_model_path: ""
+  reference_tokenizer_path: ""
   batch_size: 32
   device: "cuda:0"
 
