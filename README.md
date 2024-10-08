@@ -6,7 +6,7 @@ Nowhere (and How to Fix It)"](https://arxiv.org/pdf/2406.17975).
 
 We provide an easy-to-use framework to evaluate MIAs against LLMs, 
 benchmarking their performance compared to MIAs from the literature 
-across **the (proper) benchmarks recommended in the paper**. 
+across **the benchmarks recommended in the paper**. 
 
 ## (1) Installation
 
@@ -82,4 +82,4 @@ Currently, this repo contains the following attacks, where comments or default p
 | CON-ReCall                | [Wang et al. (2024)](https://arxiv.org/pdf/2409.03363)           | We use 10-shot prefixes for both member- and non-member-conditioned likelihoods, drawn randomly and independently for each target example. Non-member prefixes are drawn from the auxiliary non-member distribution. For member prefixes, we assume partial access by the attacker, and draw 10 samples from the training dataset excluding the target example. |
 | SaMIA                     | [Kaneko et al. (2024)](https://arxiv.org/pdf/2404.11262)     | Using the default setup in the implementation provided alongside Kaneko et al., we generate 10 candidates using top-k sampling with top-k=50, temperature of 1.0, and maximum length of 1,024. The prefix is set to 50% of the input sample. |
 
-Finally, for document-level MIAs we refer to `./document_level/`. 
+Finally, for document-level MIAs we refer to `./document_level/README.md`. 
