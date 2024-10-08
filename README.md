@@ -90,12 +90,10 @@ Finally, for document-level MIAs we refer to `./document_level/README.md`.
 If you found this repository useful for your work, kindly cite:
 
 ```
-@article{meeus2024inherent,
-  title={Inherent challenges of post-hoc membership inference for large language models},
-  author={Meeus, Matthieu and Jain, Shubham and Rei, Marek and de Montjoye, Yves-Alexandre},
+@article{meeus2024sok,
+  title={SoK: Membership Inference Attacks on LLMs are Rushing Nowhere (and How to Fix It)},
+  author={Meeus, Matthieu and Shilov, Igor and Jain, Shubham and Faysse, Manuel and Rei, Marek and de Montjoye, Yves-Alexandre},
   journal={arXiv preprint arXiv:2406.17975},
   year={2024}
 }
 ```
-
-That is: until Google Scholar updates the title and author list :)
