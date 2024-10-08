@@ -107,7 +107,7 @@ recall:
   module: recall
   extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
   split: "seq_len_100"
-  batch_size: 32
+  batch_size: 16
   n_shots: 10
   match_perplexity: false
   fixed_prefix: true
@@ -116,6 +116,6 @@ conrecall:
   module: conrecall
   extra_non_member_dataset: "imperial-cpg/copyright-traps-extra-non-members"
   split: "seq_len_100"
-  batch_size: 32
+  batch_size: 16
   n_shots: 10
   match_perplexity: false
