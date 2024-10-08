@@ -12,7 +12,8 @@ across **the benchmarks recommended in the paper**.
 
 In your python environment, run `pip install -r requirements.txt` to install the required dependencies. 
 
-To run this code, access to GPUs is recommended. 
+To run this code, access to GPUs is recommended. To access some datasets and models, you might also want to 
+log into to your Hugging Face account using `huggingface cli login` and providing your access token.
 
 ## (2) Accessing datasets
 
@@ -71,7 +72,7 @@ Currently, this repo contains the following attacks, where comments or default p
 | Loss                      | [Yeom et al. (2021)](https://arxiv.org/pdf/1709.01604) | NA |
 | Lowercase                 | [Carlini et al. (2021)](https://www.usenix.org/system/files/sec21-carlini-extracting.pdf) | NA|
 | Zlib                      | [Carlini et al. (2021)](https://www.usenix.org/system/files/sec21-carlini-extracting.pdf) | NA|
-| Ratio-LLaMA-2             | [Carlini et al. (2021)](https://www.usenix.org/system/files/sec21-carlini-extracting.pdf) | We allow for any reference model to used in the Ratio attack, but do recommend using the LLaMA-2 7B for copyright traps. |
+| Ratio-LLaMA-2             | [Carlini et al. (2021)](https://www.usenix.org/system/files/sec21-carlini-extracting.pdf) | We allow for any reference model to used in the Ratio attack, but do recommend using the `meta-llama/Llama-2-7b-hf` for copyright traps. |
 | Neighborhood              | [Mattern et al. (2023)](https://arxiv.org/pdf/2305.18462) | We follow the neighborhood generation procedure outlined in Section 2.2 of Mattern et al. with RoBERTa as an MLM, neighborhood size of 50 samples, dropout probability 0.7, and top-k = 10. |
 | Min-K% Prob               | [Shi et al. (2023)](https://arxiv.org/pdf/2310.16789v3)           | Following the best performing setting reported in Shi et al., we use k = 20. |
 | Min-K%++                  | [Zhang et al. (2024)](https://arxiv.org/pdf/2404.02936v1)            | In line with Min-K% Prob, we use k = 20. |
@@ -83,3 +84,18 @@ Currently, this repo contains the following attacks, where comments or default p
 | SaMIA                     | [Kaneko et al. (2024)](https://arxiv.org/pdf/2404.11262)     | Using the default setup in the implementation provided alongside Kaneko et al., we generate 10 candidates using top-k sampling with top-k=50, temperature of 1.0, and maximum length of 1,024. The prefix is set to 50% of the input sample. |
 
 Finally, for document-level MIAs we refer to `./document_level/README.md`. 
+
+## (4) References
+
+If you found this repository useful for your work, kindly cite:
+
+```
+@article{meeus2024inherent,
+  title={Inherent challenges of post-hoc membership inference for large language models},
+  author={Meeus, Matthieu and Jain, Shubham and Rei, Marek and de Montjoye, Yves-Alexandre},
+  journal={arXiv preprint arXiv:2406.17975},
+  year={2024}
+}
+```
+
+That is: until Google Scholar updates the title and author list :)
