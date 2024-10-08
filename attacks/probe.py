@@ -210,7 +210,7 @@ class ProbeAttack(AbstractAttack):
         return probe_model, dev_best_layer
 
     def fine_tune_proxy(self, ds_members):
-        dirname = f"{self.signature()}_v1"
+        dirname = f"{self.signature(ds_members)}_v1"
         dirpath = os.path.join(self.config['model_save_dir'], dirname)
 
         if os.path.exists(dirpath):
