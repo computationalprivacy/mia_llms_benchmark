@@ -1,5 +1,8 @@
 # Running document-level MIAs against LLMs
 
+We here provide the instructions, code and data used to run the document-level MIA results 
+as reported in ["SoK: Membership Inference Attacks on LLMs are Rushing Nowhere (and How to Fix It)"](https://arxiv.org/pdf/2406.17975).
+
 ## Datasets
 
 In the paper, we consider full ArXiv documents as members and non-members to conduct document-level MIAs against LLMs. 
@@ -29,3 +32,15 @@ Unfortunately, we do not have the license to redistribute this set of non-member
 If members and non-members are collected in this RDD setup, (document-level) MIAs can be developed and evaluated against the suite of [OpenLLaMA models](https://huggingface.co/openlm-research/open_llama_7b). 
 
 ## Running document-level MIAs
+
+As mentioned in [the paper](https://arxiv.org/pdf/2406.17975), one can evaluate document-level MIAs by aggregating sequence-level MIA scores for the same document. 
+Proposed by [Shi et al.](https://arxiv.org/pdf/2310.16789v3), one method to do so is computing a threshold for which the sequence-level MIA reaches a maximum accuracy (on a training set of documents), 
+after which the average sequence-level binary prediction can be used as the document-level scoring function. 
+
+Assuming the sequence-level results have been computed using the `../main.py`, and saved in `PATH_TO_RESULTS`, 
+we provide the code to compute the document-level MIA in `from_seq_to_doc_level.py`, 
+with an example script `from_seq_to_doc_level.sh`. 
+Note that you need access to the original dataset as well, to access the document indices. 
+
+For the other document-level MIAs from [Meeus et al.](https://arxiv.org/pdf/2310.15007) implemented in the paper, 
+we refer to [their repository](https://github.com/computationalprivacy/document-level-membership-inference). 
