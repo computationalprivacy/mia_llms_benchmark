@@ -33,28 +33,18 @@ class ConRecallAttack(AbstractAttack):
         super().__init__(name, model, tokenizer, config)
         self.extra_non_member_dataset = load_dataset(config['extra_non_member_dataset'], split=config['split'])
 
-    def build_non_member_prefix(self, perplexity_bucket):
-        if self.config["match_perplexity"]:
-            ppl_bucket = perplexity_bucket
-        else:
-            ppl_bucket = None
-
+    def build_non_member_prefix(self, perplexity_bucket=None):
         return make_conrecall_prefix(
             dataset=self.extra_non_member_dataset,
             n_shots=self.config["n_shots"],
-            perplexity_bucket=ppl_bucket
+            perplexity_bucket=perplexity_bucket
         )
 
-    def build_member_prefix(self, perplexity_bucket, target_index, dataset):
-        if self.config["match_perplexity"]:
-            ppl_bucket = perplexity_bucket
-        else:
-            ppl_bucket = None
-
+    def build_member_prefix(self, target_index, dataset, perplexity_bucket=None):
         return make_conrecall_prefix(
             dataset=dataset,
             n_shots=self.config["n_shots"],
-            perplexity_bucket=ppl_bucket,
+            perplexity_bucket=perplexity_bucket,
             target_index=target_index
         )
 
@@ -71,22 +61,34 @@ class ConRecallAttack(AbstractAttack):
         return dataset
 
     def conrecall_nlloss(self, batch, dataset):
-        it = enumerate(zip(batch["perplexity_bucket"], batch["text"]))
-        non_member_texts = [
-            self.build_non_member_prefix(ppl_bucket) + " " + text
-            for i, (ppl_bucket, text) in it
-        ]
+        if self.config["match_perplexity"]:
+            it = enumerate(zip(batch["perplexity_bucket"], batch["text"]))
+            non_member_texts = [
+                self.build_non_member_prefix(ppl_bucket) + " " + text
+                for i, (ppl_bucket, text) in it
+            ]
 
-        it = enumerate(zip(batch["perplexity_bucket"], batch["text"]))
-        ds_members_only = dataset.filter(lambda x: x["label"] == 1)
-        member_texts = [
-            self.build_member_prefix(
-                perplexity_bucket=ppl_bucket,
-                target_index=i,
-                dataset=ds_members_only
-            ) + " " + text
-            for i, (ppl_bucket, text) in it
-        ]
+            it = enumerate(zip(batch["perplexity_bucket"], batch["text"]))
+            ds_members_only = dataset.filter(lambda x: x["label"] == 1)
+            member_texts = [
+                self.build_member_prefix(
+                    perplexity_bucket=ppl_bucket,
+                    target_index=i,
+                    dataset=ds_members_only
+                ) + " " + text
+                for i, (ppl_bucket, text) in it
+            ]
+        else:
+            non_member_texts = [self.build_non_member_prefix() + " " + text for text in batch["text"]]
+
+            ds_members_only = dataset.filter(lambda x: x["label"] == 1)
+            member_texts = [
+                self.build_member_prefix(
+                    target_index=i,
+                    dataset=ds_members_only
+                ) + " " + text
+                for i, text in enumerate(batch["text"])
+            ]
 
         ret = {}
         for texts, label in [(non_member_texts, "nm"), (member_texts, "m")]:
